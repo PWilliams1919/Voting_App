@@ -3,10 +3,18 @@ from gui import *
 import csv
 
 vote_dict = {}
-with open('vote_results.csv', 'r') as csvfile:
-    votereader = csv.reader(csvfile)
-    for row in votereader:
-        vote_dict[int(row[0])] = row[1]
+try:
+    with open('vote_results.csv', 'r') as csvfile:
+        votereader = csv.reader(csvfile)
+        for row in votereader:
+            vote_dict[int(row[0])] = row[1]
+except FileNotFoundError:
+    with open('vote_results.csv','w') as newfile:
+        pass
+    with open('vote_results.csv', 'r') as csvfile:
+        votereader = csv.reader(csvfile)
+        for row in votereader:
+            vote_dict[int(row[0])] = row[1]
 
 class Logic(QMainWindow, Ui_MainWindow):
 
