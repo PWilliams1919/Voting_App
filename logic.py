@@ -1,24 +1,12 @@
 from PyQt6.QtWidgets import *
 from gui import *
-import csv
-
-vote_dict = {}
-try:
-    with open('vote_results.csv', 'r') as csvfile:
-        votereader = csv.reader(csvfile)
-        for row in votereader:
-            vote_dict[int(row[0])] = row[1]
-except FileNotFoundError:
-    with open('vote_results.csv','w') as newfile:
-        pass
-    with open('vote_results.csv', 'r') as csvfile:
-        votereader = csv.reader(csvfile)
-        for row in votereader:
-            vote_dict[int(row[0])] = row[1]
+from ballotbox import *
 
 class Logic(QMainWindow, Ui_MainWindow):
 
     SHOW_OTHER = False
+
+    ballotbox = Ballotbox()
 
     def __init__(self):
         super().__init__()
@@ -35,7 +23,7 @@ class Logic(QMainWindow, Ui_MainWindow):
 
         self.other_textentry.textChanged.connect(lambda: self.save_enable(self.buttonGroup.checkedId()))
 
-        self.results_button.clicked.connect(lambda: self.show_chart_window(vote_dict))
+        self.results_button.clicked.connect(lambda: self.show_chart_window(self.ballotbox.get_vote_dict()))
 
         self.exit_button.clicked.connect(lambda: self.exit_function())
 
@@ -88,23 +76,27 @@ class Logic(QMainWindow, Ui_MainWindow):
             self.save_button.setEnabled(False)
 
 
-    def save_vote(self, voter_id: int, vote_choice: int) -> None:
+    def save_vote(self, voter_id: int, vote_index: int) -> None:
         """
         If voter ID has not already been used, saves it and the candidate selection or "other" text entry to vote_dict
         :param voter_id: ID number from Voter ID textline entry box
-        :param vote_choice: The integer ID of the currently selected radio button.
+        :param vote_index: The integer ID of the currently selected radio button.
         :return: None
         """
         if str(voter_id).isnumeric():
-            if int(voter_id) in vote_dict.keys():
-                self.show_error_popup(1)
+            choice = ''
+            can_vote = self.ballotbox.check_id(voter_id)
+            if can_vote:
+                if vote_index == -2:
+                    choice = 'Pro-Skub'
+                elif vote_index == -3:
+                    choice = 'Anti-Skub'
+                elif vote_index == -4:
+                    choice = str(self.other_textentry.text().strip())
+
+                self.ballotbox.add_vote(voter_id, choice)
             else:
-                if vote_choice == -2:
-                    vote_dict[int(voter_id)] = 'Pro-Skub'
-                elif vote_choice == -3:
-                    vote_dict[int(voter_id)] = 'Anti-Skub'
-                elif vote_choice == -4:
-                    vote_dict[int(voter_id)] = str(self.other_textentry.text().strip())
+                self.show_error_popup(1)
         else:
             self.show_error_popup(2)
         self.clear_fields()
@@ -115,8 +107,9 @@ class Logic(QMainWindow, Ui_MainWindow):
         :return: None
         """
         with open('vote_results.csv', 'w') as csvfile:
+            write_dict = self.ballotbox.get_vote_dict()
             vote_writer = csv.writer(csvfile, lineterminator='\n')
-            for voter in vote_dict:
-                vote_writer.writerow([voter, vote_dict[voter]])
+            for voter in write_dict:
+                vote_writer.writerow([voter, write_dict[voter]])
 
         self.close()
