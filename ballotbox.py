@@ -33,9 +33,11 @@ class Ballotbox:
         :param voter_id: Entered voter ID
         :return: status on if that ID can cast a vote
         """
-        if voter_id in self.__vote_dict:
+        if int(voter_id) in self.__vote_dict.keys():
+            print(self.__vote_dict)
             return False
         else:
+            print(self.__vote_dict)
             return True
 
     def add_vote(self, voter_id: str, candidate: str) -> None:

@@ -85,6 +85,7 @@ class Logic(QMainWindow, Ui_MainWindow):
         if str(voter_id).isnumeric():
             choice = ''
             can_vote = self.ballotbox.check_id(str(voter_id))
+            print(can_vote)
             if can_vote:
                 if vote_index == -2:
                     choice = 'Pro-Skub'
