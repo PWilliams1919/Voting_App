@@ -166,8 +166,7 @@ class Ui_MainWindow(object):
     def show_error_popup(self, error_code: int) -> None:
         """
         Generates popup error box based on error code.
-        :param error_code: error code specified by code in logic.py
-        :return: None
+        :param error_code: error code indicator
         """
         popup = QMessageBox()
         popup.setWindowTitle('Error!')
@@ -181,11 +180,9 @@ class Ui_MainWindow(object):
 
     def show_chart_window(self, vote_dict: dict) -> None:
         """
-        Draws and generates bar graph representing the current vote count based on vote_dict.
+        Draws and generates bar graph representing the current vote distribution.
         :param vote_dict: Updated dictionary of votes passed from Ballotbox object.
-        :return: None
         """
-        print(vote_dict)
         vote_tally = {}
         x_axis = []
         x_values = []

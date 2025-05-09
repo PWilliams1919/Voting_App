@@ -9,6 +9,9 @@ class Logic(QMainWindow, Ui_MainWindow):
     ballotbox = Ballotbox()
 
     def __init__(self):
+        """
+        Initializes program window
+        """
         super().__init__()
         self.setupUi(self)
 
@@ -29,10 +32,9 @@ class Logic(QMainWindow, Ui_MainWindow):
 
     def other_toggle(self, button: int) -> None:
         """
-        Hides or un-hides the "Other" label and textline entry box. Is called each time the radio button selection
+        Hides or un-hides the "other" label and textline entry box. Is called each time the radio button selection
         is changed.
         :param button: The integer ID of the newly selected radio button.
-        :return: None
         """
         if self.SHOW_OTHER and (button == -2 or button == -3):
             self.other_label.hide()
@@ -46,9 +48,8 @@ class Logic(QMainWindow, Ui_MainWindow):
 
     def clear_fields(self) -> None:
         """
-        Clears Voter ID textline entry box, "Other" textline entry box, and all radio button selections,
-        resets focus on Voter ID textline and hides "Other" label/textline.
-        :return: None
+        Clears Voter ID textline entry box, "other" textline entry box, and all radio button selections,
+        resets focus on Voter ID textline and hides "other" label/textline.
         """
         self.voterid_textentry.setText('')
         self.voterid_textentry.setFocus()
@@ -62,10 +63,9 @@ class Logic(QMainWindow, Ui_MainWindow):
 
     def save_enable(self, button: int) -> None:
         """
-        Enables save button if voter ID is present, radio button is selected and "other" text field is filled if other
-        radio button is selected. Disables save button if otherwise.
+        Enables save button if voter ID is present and a radio button is selected (requires "other" text
+        field is filled if "other" radio button is selected). Disables save button if requirements aren't met.
         :param button: The integer ID of the newly selected radio button.
-        :return: None
         """
         if len(self.voterid_textentry.text()) > 0:
             if button == -2 or button == -3 or (button == -4 and len(self.other_textentry.text().strip()) > 0):
@@ -78,10 +78,9 @@ class Logic(QMainWindow, Ui_MainWindow):
 
     def save_vote(self, voter_id: int, vote_index: int) -> None:
         """
-        If voter ID has not already been used, saves it and the candidate selection or "other" text entry to vote_dict
+        Validates voter ID is integer and checks for previous use, if valid sends voter ID and vote to Ballotbox object.
         :param voter_id: ID number from Voter ID textline entry box
         :param vote_index: The integer ID of the currently selected radio button.
-        :return: None
         """
         if str(voter_id).isnumeric():
             choice = ''
@@ -103,8 +102,7 @@ class Logic(QMainWindow, Ui_MainWindow):
 
     def exit_function(self) -> None:
         """
-        Overwrites csv file with current vote_dict values and closes program.
-        :return: None
+        Overwrites existing csv file with current Ballotbox contents and closes program.
         """
         with open('vote_results.csv', 'w') as csvfile:
             write_dict = self.ballotbox.get_vote_dict()

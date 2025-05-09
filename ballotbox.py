@@ -20,11 +20,19 @@ class Ballotbox:
                 for row in votereader:
                     self.__vote_dict[int(row[0])] = row[1]
 
-    def get_vote_dict(self):
+    def get_vote_dict(self) -> dict:
+        """
+        Returns current vote_dict attribute of the object.
+        :return: vote_dict dictionary
+        """
         return self.__vote_dict
 
-    def check_id(self, voter_id):
-        can_vote = False
+    def check_id(self, voter_id: str) -> bool:
+        """
+        Checks if entered voter ID number has already been used.
+        :param voter_id: Entered voter ID
+        :return: status on if that ID can cast a vote
+        """
         if voter_id in self.__vote_dict:
             can_vote = False
         else:
@@ -32,5 +40,10 @@ class Ballotbox:
 
         return can_vote
 
-    def add_vote(self, voter_id, candidate):
+    def add_vote(self, voter_id: str, candidate: str) -> None:
+        """
+        Adds voter ID and vote to objects vote dictionary.
+        :param voter_id: Entered voter ID
+        :param candidate: Selected candidate
+        """
         self.__vote_dict[voter_id] = candidate
