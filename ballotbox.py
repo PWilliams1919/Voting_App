@@ -34,11 +34,9 @@ class Ballotbox:
         :return: status on if that ID can cast a vote
         """
         if voter_id in self.__vote_dict:
-            can_vote = False
+            return False
         else:
-            can_vote = True
-
-        return can_vote
+            return True
 
     def add_vote(self, voter_id: str, candidate: str) -> None:
         """
